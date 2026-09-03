@@ -1,6 +1,7 @@
 import sys
 import random
 import requests
+from beginner import beginnerb
 from window import MainWindow
 
 from PySide6.QtWidgets import (
@@ -54,6 +55,15 @@ container = QWidget()
 container.setLayout(main_layout)
 
 window.setCentralWidget(container)
+
+
+beginnerb()
+
+
+
+
+
+
 
 window.show()
 
