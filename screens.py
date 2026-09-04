@@ -1,13 +1,11 @@
+print("LOADING SCREENS FROM:", __file__)
 from PySide6.QtWidgets import (
-    QMainWindow,
     QWidget,
-    QApplication,
     QLabel,
     QPushButton,
     QTextEdit,
     QVBoxLayout,
     QHBoxLayout,
-    QWidget,
 )
 
 
@@ -23,7 +21,7 @@ class MainMenu(QWidget):
          self.master_button: QPushButton = QPushButton("Master Button")
 
          #buttons
-         self.beginner_button.clicked.connect(self.handle_beginner)
+         #self.beginner_button.clicked.connect(self.handle_beginner)
 
          #Layouts
          bottom_layout = QHBoxLayout()
@@ -44,3 +42,23 @@ class MainMenu(QWidget):
         print("beginner clicker")
         #Bstore = Bbuttonlogic()
         #passage_box.setPlainText(Bstore)
+
+class PracticeScreen(QWidget):
+    def __init__(self):
+        super().__init__()
+        #passage_box = QTextEdit()
+        #passage_box.setReadOnly(True)
+        #passage_box.setPlaceholderText("Your Japanese passage will appear here...")
+        print("PRACTICE SCREEN CREATED")
+
+        new_passage_button = QPushButton("New Passage")
+        translate_button = QPushButton("Translate")
+        self.back_button: QPushButton = QPushButton("Back")
+        self.back_button.clicked.connect(lambda: print("LOCAL BACK WORKS"))
+
+        #Create layouts
+        top_layout = QHBoxLayout()
+        top_layout.addWidget(new_passage_button)
+        top_layout.addWidget(translate_button)
+        top_layout.addWidget(self.back_button)
+        self.setLayout(top_layout)

@@ -10,6 +10,9 @@ params = {
     "limit": 5
 
 }
+#
+#KNOWN BUG: fresh passage logic needs to move inside function
+#
 
 #number = random.randint(0, 4)
 response=requests.get(URL, params=params)
