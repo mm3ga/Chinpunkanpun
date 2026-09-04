@@ -1,7 +1,6 @@
+#Imports
 import sys
-import random
-import requests
-from beginner import beginnerb
+from beginner import Bbuttonlogic
 from window import MainWindow
 
 from PySide6.QtWidgets import (
@@ -14,13 +13,19 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+#Button Handler Functions
 
+def handle_beginner():
+    Bstore = Bbuttonlogic()
+    passage_box.setPlainText(Bstore)
+
+#Create QT Application
 app = QApplication(sys.argv)
 
-# CREATE the window
+# Create the window
 window = MainWindow()
 
-
+#Create widgets
 title = QLabel("🌸 Chinpunkanpun: Kawaii Nihongo! 🌸")
 title.setStyleSheet("font-size: 30px; font-weight: bold;")
 
@@ -35,7 +40,7 @@ passage_box.setPlaceholderText("Your Japanese passage will appear here...")
 new_passage_button = QPushButton("New Passage")
 translate_button = QPushButton("Translate")
 
-
+#Create layouts
 top_layout = QHBoxLayout()
 top_layout.addWidget(new_passage_button)
 top_layout.addWidget(translate_button)
@@ -56,15 +61,10 @@ container.setLayout(main_layout)
 
 window.setCentralWidget(container)
 
+#Connect Signals
+beginner_button.clicked.connect(handle_beginner)
 
-beginnerb()
-
-
-
-
-
-
-
+#Show Everything
 window.show()
 
 sys.exit(app.exec())

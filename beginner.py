@@ -17,8 +17,11 @@ response=requests.get(URL, params=params)
 data = response.json()
 
 
-len(data["data"]) #print(data["data"][0]["text"])
+#len(data["data"]) #print(data["data"][0]["text"])
 
 chosen = random.choice(data["data"])
-def beginnerb():
-    print(chosen["text"])
+
+def Bbuttonlogic():
+    hold = chosen["text"]
+
+    return hold
