@@ -1,5 +1,3 @@
-from unittest import result
-
 from PySide6.QtWidgets import QMainWindow, QPushButton, QStackedWidget
 from PySide6.QtCore import QObject, QThread, Qt, Signal
 from passages import Bbuttonlogic, PassageWorker
@@ -19,6 +17,7 @@ class MainWindow(QMainWindow):
         )
 
         self.setFixedSize(1000, 700)
+        self.current_passage = None
         self.loading_passage = False
         self.main_menu = MainMenu()
         self.practice_screen = PracticeScreen()
@@ -30,6 +29,7 @@ class MainWindow(QMainWindow):
         self.practice_screen.new_passage_button.clicked.connect(self.load_beginner)
         self.main_menu.beginner_button.clicked.connect(self.switch_stack)
         self.practice_screen.back_button.clicked.connect(self.go_back_stack)
+        self.practice_screen.translate_button.clicked.connect(self.translate_current)
         self.thread: QThread = QThread(self)
         self.request_passage.connect(self.worker.do_work)
         self.worker.signal.connect(self.recieve_sig)
@@ -47,14 +47,22 @@ class MainWindow(QMainWindow):
             return
         else:
             self.loading_passage = True,
-            self.practice_screen.new_passage_button.setEnabled(False),
+            self.practice_screen.new_passage_button.setEnabled(False)
             self.request_passage.emit()
     def recieve_sig(self, text):
         #self.worker.signal.connect(self.worker.do_work)
         #print(text)
         self.loading_passage = False
+
+        self.current_passage = text
+
         self.practice_screen.new_passage_button.setEnabled(True)
         self.practice_screen.passage_box.setText(text)
+    def translate_current(self):
+        if self.current_passage == False:
+            return
+        else:
+            print(self.current_passage)
     def closeEvent(self, event):
         self.thread.quit()
         self.thread.wait()

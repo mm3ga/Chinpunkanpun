@@ -30,4 +30,3 @@ class PassageWorker(QObject):
     def do_work(self):
         result = Bbuttonlogic()
         self.signal.emit(result)
-        
