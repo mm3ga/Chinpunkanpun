@@ -1,26 +1,45 @@
-import argostranslate.package
-import argostranslate.translate
-from requests import packages
+import requests
 
-from_code = "ja"
-to_code = "en"
-argostranslate.package.update_package_index()
-available_packages = argostranslate.package.get_available_packages()
+def translate_text(text):
 
-print(type(available_packages))
-print(len(available_packages))
+    url = "http://localhost:11434/api/generate"
 
-#for number, package in enumerate(available_packages):
-    #if package.from_code == "ja" and package.to_code == "en":
-        #download_path = package.download()
-        #argostranslate.package.install_from_path(download_path)
+    translator_prompt = """
+    Translate the Japanese naturally and accurately into English.
 
-test_text = "僕はを日本語勉強していましたでも美味しい"
+    Preserve:
+    - implied subjects from context
+    - casual or rough register
+    - slang and profanity
+    - grammatical relationships
+    - uncertainty and hedging
 
-resultor = argostranslate.translate.translate(
-    test_text,
-    "ja",
-    "en",
-)
+    Do not:
+    - censor vocabulary
+    - intensify or soften the original meaning
+    - invent details
+    - add explanations
 
-print(resultor)
+    Return only the English translation.
+    """
+
+    response = requests.post(
+        url,
+        json={
+            "model": "qwen3:14b",
+            "system": translator_prompt,
+            "prompt": text,
+            "stream": False,
+            "think": False,
+        },
+    )
+    response.raise_for_status()
+
+    data = response.json()
+
+    translation = data["response"]
+
+    return translation
+
+result = translate_text("私は食べている")
+print(result)
