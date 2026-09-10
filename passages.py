@@ -6,7 +6,7 @@ URL = "https://api.tatoeba.org/v1/sentences"
 
 params = {
     "lang":"jpn",
-    "list": 506,
+    #"list": 506,
     "sort": "random",
     "limit": 5
 }
@@ -18,6 +18,8 @@ def Bbuttonlogic():
 
     response=requests.get(URL, params=params)
     data = response.json()
+    #print("RETURNED:", [item["text"] for item in data["data"]])
+    #print("COUNT:", len(data["data"]))
     chosen = random.choice(data["data"])
     hold = chosen["text"]
 
