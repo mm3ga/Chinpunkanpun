@@ -17,17 +17,17 @@ tokenizer = Dictionary().create()
 
 n5_vocab = get_vocab("N5")
 
-beginner_words = set()
+n5_words = set()
 
 for entry in n5_vocab:
     forms = [entry.word, entry.reading]
 
     for form in forms:
         for variant in form.replace("/", " ").split():
-            beginner_words.add(variant.strip())
+            n5_words.add(variant.strip())
 
 
-def is_beginner_sentence(text):
+def is_intermediate_sentence(text):
     advanced_patterns = [
         "いたしました",
         "でございます",
@@ -65,9 +65,9 @@ def is_beginner_sentence(text):
         dictionary_word = word.dictionary_form()
 
         if pos in ["名詞", "動詞", "形容詞"]:
-            if word.dictionary_form() not in beginner_words:
+            if word.dictionary_form() not in n5_words:
                 unknown_words += 1
-                
+
                 if any("\u4e00" <= char <= "\u9fff" for char in dictionary_word):
                     unknown_kanji_words += 1
 
@@ -80,8 +80,8 @@ def is_beginner_sentence(text):
     return True
 
 
-def Bbuttonlogic():
-    beginner_sentences = []
+def get_intermediate_passage():
+    intermediate_sentences = []
 
     response=requests.get(URL, params=params)
     data = response.json()
@@ -89,17 +89,16 @@ def Bbuttonlogic():
     for item in data["data"]:
         text = item["text"]
 
-        if is_beginner_sentence(text) == True:
-            beginner_sentences.append(item)
+        if is_intermediate_sentence(text) == True:
+            intermediate_sentences.append(item)
 
-    print("SURVIVORS:", len(beginner_sentences))
+    #print("SURVIVORS:", len(intermediate_sentences))
 
-    chosen = random.choice(beginner_sentences)
+    chosen = random.choice(intermediate_sentences)
     hold = chosen["text"]
 
     return hold
 
-print(Bbuttonlogic())
 
 class PassageWorker(QObject):
     signal = Signal(str)
@@ -108,5 +107,5 @@ class PassageWorker(QObject):
         super().__init__()
 
     def do_work(self):
-        result = Bbuttonlogic()
+        result = get_intermediate_passage()
         self.signal.emit(result)

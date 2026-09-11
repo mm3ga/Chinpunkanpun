@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QStackedWidget
-from PySide6.QtCore import QObject, QThread, Qt, Signal
-from passages import Bbuttonlogic, PassageWorker
+from PySide6.QtWidgets import QMainWindow, QStackedWidget
+from PySide6.QtCore import QThread, Qt, Signal
+from passages import get_intermediate_passage, PassageWorker
 from screens import MainMenu, PracticeScreen
 from translation import TranslationWorker
 
@@ -31,8 +31,8 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.main_menu)
         self.stack.addWidget(self.practice_screen)
         self.setCentralWidget(self.stack)
-        self.practice_screen.new_passage_button.clicked.connect(self.load_beginner)
-        self.main_menu.beginner_button.clicked.connect(self.switch_stack)
+        self.practice_screen.new_passage_button.clicked.connect(self.load_intermediate)
+        self.main_menu.intermediate_button.clicked.connect(self.switch_stack)
         self.practice_screen.back_button.clicked.connect(self.go_back_stack)
         self.practice_screen.translate_button.clicked.connect(self.translate_current)
         self.thread: QThread = QThread(self)
@@ -50,9 +50,7 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.practice_screen)
     def go_back_stack(self):
         self.stack.setCurrentWidget(self.main_menu)
-    def load_beginner(self):
-        #bval = Bbuttonlogic()
-        #self.practice_screen.passage_box.setText(bval)
+    def load_intermediate(self):
         if self.loading_passage:
             return
 
@@ -60,8 +58,6 @@ class MainWindow(QMainWindow):
         self.practice_screen.new_passage_button.setEnabled(False)
         self.request_passage.emit()
     def recieve_sig(self, text):
-        #self.worker.signal.connect(self.worker.do_work)
-        #print(text)
         self.loading_passage = False
         self.current_passage = text
         self.current_translation = None
