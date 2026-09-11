@@ -99,6 +99,14 @@ def get_intermediate_passage():
 
     return hold
 
+def get_beginner_passage():
+    beginner_passages = [
+        "猫が好きです。",
+        "今日は暑いです。",
+        "学校に行きます。",
+    ]
+    return random.choice(beginner_passages)
+
 
 class PassageWorker(QObject):
     signal = Signal(str)
@@ -106,6 +114,11 @@ class PassageWorker(QObject):
     def __init__(self):
         super().__init__()
 
-    def do_work(self):
-        result = get_intermediate_passage()
+    def do_work(self, mode):
+        if mode == "beginner":
+            result = get_beginner_passage()
+        elif mode == "intermediate":
+            result = get_intermediate_passage()
+        else:
+            return
         self.signal.emit(result)

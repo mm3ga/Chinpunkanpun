@@ -1,11 +1,11 @@
 from PySide6.QtWidgets import QMainWindow, QStackedWidget
 from PySide6.QtCore import QThread, Qt, Signal
-from passages import get_intermediate_passage, PassageWorker
+from passages import PassageWorker
 from screens import MainMenu, PracticeScreen
 from translation import TranslationWorker
 
 class MainWindow(QMainWindow):
-    request_passage = Signal()
+    request_passage = Signal(str)
     request_translation = Signal(str)
     def __init__(self):
         super().__init__()
@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
 
         self.setFixedSize(1000, 700)
         self.current_passage = None
+        self.current_mode = None
         self.current_translation = None
         self.showing_translation = False
         self.loading_passage = False
@@ -31,8 +32,9 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.main_menu)
         self.stack.addWidget(self.practice_screen)
         self.setCentralWidget(self.stack)
-        self.practice_screen.new_passage_button.clicked.connect(self.load_intermediate)
-        self.main_menu.intermediate_button.clicked.connect(self.switch_stack)
+        self.practice_screen.new_passage_button.clicked.connect(self.new_passage)
+        self.main_menu.intermediate_button.clicked.connect(self.load_intermediate)
+        self.main_menu.beginner_button.clicked.connect(self.load_beginner)
         self.practice_screen.back_button.clicked.connect(self.go_back_stack)
         self.practice_screen.translate_button.clicked.connect(self.translate_current)
         self.thread: QThread = QThread(self)
@@ -50,13 +52,22 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(self.practice_screen)
     def go_back_stack(self):
         self.stack.setCurrentWidget(self.main_menu)
-    def load_intermediate(self):
+    def new_passage(self):
+        if self.current_mode is None:
+            return
+
         if self.loading_passage:
             return
 
         self.loading_passage = True
         self.practice_screen.new_passage_button.setEnabled(False)
-        self.request_passage.emit()
+        self.request_passage.emit(self.current_mode)
+    def load_beginner(self):
+        self.current_mode = "beginner"
+        self.stack.setCurrentWidget(self.practice_screen)
+    def load_intermediate(self):
+        self.current_mode = "intermediate"
+        self.stack.setCurrentWidget(self.practice_screen)
     def recieve_sig(self, text):
         self.loading_passage = False
         self.current_passage = text
