@@ -1,34 +1,15 @@
-from passages import Bbuttonlogic, is_beginner_sentence
-from sudachipy import Dictionary
+from openjlpt import get_vocab
 
-tokenizer = Dictionary().create()
+n5_vocab = get_vocab("N5")
 
-beginner_words = {
-    "猫",
-    "犬",
-    "学校",
-    "行く",
-    "食べる",
-    "見る",
-    "好き",
-}
+beginner_words = set()
 
-text = "死刑囚は黙秘した。"
+for entry in n5_vocab:
+    for variant in entry.word.split("/"):
+        beginner_words.add(variant.strip())
 
-words = tokenizer.tokenize(text)
-
-#for word in words:
-#    dic = word.surface()
- #   doc = word.dictionary_form()
-  #  print(dic)
-   # print(doc)
-    #print(
-     #   word.dictionary_form(),
-      #  word.part_of_speech()[0]
-    #)
-#for word in words:
-   # if beginner_words:
-        #print(
-           # word.dictionary_form(),
-            #word.part_of_speech()[0]
-       # )
+print(len(beginner_words))
+print("いい" in beginner_words)
+print("よい" in beginner_words)
+print("川" in beginner_words)
+print("河" in beginner_words)
