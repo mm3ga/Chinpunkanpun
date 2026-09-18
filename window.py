@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
 from PySide6.QtCore import QThread, Qt, Signal
 from passages import PassageWorker
-from screens import MainMenu, PracticeScreen
+from screens import KanaHelpScreen, MainMenu, PracticeScreen, BeginnerMenu
 from translation import TranslationWorker
 from study_support import analyze_sentence
 
@@ -28,16 +28,24 @@ class MainWindow(QMainWindow):
         self.loading_passage = False
         self.main_menu = MainMenu()
         self.practice_screen = PracticeScreen()
+        self.beginner_menu = BeginnerMenu()
+        self.kana_help_screen = KanaHelpScreen()
         self.worker = PassageWorker()
         self.translation_worker = TranslationWorker()
         self.stack = QStackedWidget()
         self.stack.addWidget(self.main_menu)
         self.stack.addWidget(self.practice_screen)
+        self.stack.addWidget(self.beginner_menu)
+        self.stack.addWidget(self.kana_help_screen)
         self.setCentralWidget(self.stack)
         self.practice_screen.new_passage_button.clicked.connect(self.new_passage)
         self.practice_screen.study_help_button.clicked.connect(self.study_help_show)
         self.main_menu.intermediate_button.clicked.connect(self.load_intermediate)
-        self.main_menu.beginner_button.clicked.connect(self.load_beginner)
+        self.main_menu.beginner_button.clicked.connect(self.open_beginner_menu)
+        self.beginner_menu.practice_button.clicked.connect(self.load_beginner)
+        self.beginner_menu.kana_button.clicked.connect(self.open_kana_help)
+        self.beginner_menu.back_button.clicked.connect(self.go_back_to_main)
+        self.kana_help_screen.back_button.clicked.connect(self.go_back_to_beginner)
         self.practice_screen.back_button.clicked.connect(self.go_back_stack)
         self.practice_screen.translate_button.clicked.connect(self.translate_current)
         self.thread: QThread = QThread(self)
@@ -65,6 +73,14 @@ class MainWindow(QMainWindow):
         self.loading_passage = True
         self.practice_screen.new_passage_button.setEnabled(False)
         self.request_passage.emit(self.current_mode)
+    def open_beginner_menu(self):
+        self.stack.setCurrentWidget(self.beginner_menu)
+    def open_kana_help(self):
+        self.stack.setCurrentWidget(self.kana_help_screen)
+    def go_back_to_main(self):
+        self.stack.setCurrentWidget(self.main_menu)
+    def go_back_to_beginner(self):
+        self.stack.setCurrentWidget(self.beginner_menu)
     def load_beginner(self):
         self.current_mode = "beginner"
         self.stack.setCurrentWidget(self.practice_screen)

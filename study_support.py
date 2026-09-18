@@ -48,6 +48,6 @@ def analyze_sentence(text):
             help_records.append(help_item)
 
     return help_records
-
+            
 #analyze_sentence("今日は学校に行きます")
 #print(analyze_sentence("今日は学校に行きます。"))

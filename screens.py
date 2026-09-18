@@ -60,3 +60,31 @@ class PracticeScreen(QWidget):
         button_layout.addWidget(self.study_help_button)
 
         self.setLayout(main_layout)
+
+class BeginnerMenu(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        layout = QVBoxLayout()
+
+        self.practice_button = QPushButton("Practice")
+        self.kana_button = QPushButton("Kana Help")
+        self.back_button = QPushButton("Back")
+
+        layout.addWidget(self.practice_button)
+        layout.addWidget(self.kana_button)
+        layout.addWidget(self.back_button)
+
+
+        self.setLayout(layout)
+
+class KanaHelpScreen(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.kana_help: QPushButton = QPushButton("Kana Help")
+
+        self.hiragana = "I display HIRAGANA"
+        self.katakana = "I display KATAKANA"
+
+        self.back_button: QPushButton = QPushButton("Back")
