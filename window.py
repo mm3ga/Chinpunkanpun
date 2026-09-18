@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QStackedWidget
+from PySide6.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
 from PySide6.QtCore import QThread, Qt, Signal
 from passages import PassageWorker
 from screens import MainMenu, PracticeScreen
@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.practice_screen)
         self.setCentralWidget(self.stack)
         self.practice_screen.new_passage_button.clicked.connect(self.new_passage)
+        self.practice_screen.study_help_button.clicked.connect(self.study_help_show)
         self.main_menu.intermediate_button.clicked.connect(self.load_intermediate)
         self.main_menu.beginner_button.clicked.connect(self.load_beginner)
         self.practice_screen.back_button.clicked.connect(self.go_back_stack)
@@ -70,6 +71,30 @@ class MainWindow(QMainWindow):
     def load_intermediate(self):
         self.current_mode = "intermediate"
         self.stack.setCurrentWidget(self.practice_screen)
+    def study_help_show(self):
+        if not self.current_help_data:
+                return
+
+        lines = []
+
+        for item in self.current_help_data:
+            meanings = ", ".join(item["meaning"])
+
+            line = (
+                    f'{item["surface"]} — '
+                    f'{item["reading"]} — '
+                    f'{meanings}'
+            )
+
+            lines.append(line)
+
+        piss = "\n".join(lines)
+
+        QMessageBox.information(
+            self,
+            "Study Help",
+            piss
+        )
     def recieve_sig(self, text):
         self.loading_passage = False
         self.current_passage = text

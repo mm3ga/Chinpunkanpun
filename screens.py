@@ -45,6 +45,7 @@ class PracticeScreen(QWidget):
         self.new_passage_button = QPushButton("New Passage")
         self.translate_button = QPushButton("Translate")
         self.back_button: QPushButton = QPushButton("Back")
+        self.study_help_button: QPushButton = QPushButton("Study Help")
 
         #Create layouts
         main_layout = QVBoxLayout()
@@ -56,5 +57,6 @@ class PracticeScreen(QWidget):
         button_layout.addWidget(self.new_passage_button)
         button_layout.addWidget(self.translate_button)
         button_layout.addWidget(self.back_button)
+        button_layout.addWidget(self.study_help_button)
 
         self.setLayout(main_layout)
