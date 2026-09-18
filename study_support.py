@@ -2,10 +2,6 @@ from sudachipy import Dictionary
 from openjlpt import get_vocab
 
 tokenizer = Dictionary().create()
-
-beginner_test = "今日は学校に行きます。"
-
-words = tokenizer.tokenize(beginner_test)
 n5_vocab = get_vocab("N5")
 
 
@@ -17,6 +13,7 @@ def find_meaning(target):
 
     return None
 
+
 def katakana_to_hiragana(text):
     result = ""
 
@@ -27,26 +24,30 @@ def katakana_to_hiragana(text):
             result += char
 
     return result
-    
-def michael_b_jordon():
+
+
+def analyze_sentence(text):
+    words = tokenizer.tokenize(text)
     help_records = []
+
     for word in words:
         pos = word.part_of_speech()[0]
-        
+
         if pos in ["名詞", "動詞", "形容詞"]:
             dictionary_word = word.dictionary_form()
             meaning = find_meaning(dictionary_word)
+
             help_item = {
                 "surface": word.surface(),
                 "dictionary": dictionary_word,
-                "reading": katakana_to_hiragana(word.reading_form()),               
+                "reading": katakana_to_hiragana(word.reading_form()),
                 "pos": pos,
                 "meaning": meaning
             }
+
             help_records.append(help_item)
-            
+
     return help_records
 
-
-help_data = michael_b_jordon()
-print(help_data)
+#analyze_sentence("今日は学校に行きます")
+#print(analyze_sentence("今日は学校に行きます。"))

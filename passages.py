@@ -81,23 +81,25 @@ def is_intermediate_sentence(text):
 
 
 def get_intermediate_passage():
-    intermediate_sentences = []
+    for attempt in range(5):
+        intermediate_sentences = []
 
-    response=requests.get(URL, params=params)
-    data = response.json()
+        response = requests.get(URL, params=params)
+        data = response.json()
 
-    for item in data["data"]:
-        text = item["text"]
+        for item in data["data"]:
+            text = item["text"]
 
-        if is_intermediate_sentence(text) == True:
-            intermediate_sentences.append(item)
+            if is_intermediate_sentence(text):
+                intermediate_sentences.append(item)
 
-    #print("SURVIVORS:", len(intermediate_sentences))
+        print("SURVIVORS:", len(intermediate_sentences))
 
-    chosen = random.choice(intermediate_sentences)
-    hold = chosen["text"]
+        if intermediate_sentences:
+            chosen = random.choice(intermediate_sentences)
+            return chosen["text"]
 
-    return hold
+    return "今日は何をしようかな。"
 
 def get_beginner_passage():
     beginner_passages = [

@@ -3,6 +3,7 @@ from PySide6.QtCore import QThread, Qt, Signal
 from passages import PassageWorker
 from screens import MainMenu, PracticeScreen
 from translation import TranslationWorker
+from study_support import analyze_sentence
 
 class MainWindow(QMainWindow):
     request_passage = Signal(str)
@@ -19,6 +20,7 @@ class MainWindow(QMainWindow):
         )
 
         self.setFixedSize(1000, 700)
+        self.current_help_data = None
         self.current_passage = None
         self.current_mode = None
         self.current_translation = None
@@ -75,6 +77,11 @@ class MainWindow(QMainWindow):
         self.showing_translation = False
         self.practice_screen.new_passage_button.setEnabled(True)
         self.practice_screen.passage_box.setText(text)
+        if self.current_mode == "beginner":
+            self.current_help_data = analyze_sentence(text)
+            print("HELP DATA:", self.current_help_data)
+        else:
+            self.current_help_data = None
     def translate_current(self):
         if self.showing_translation == True:
             self.practice_screen.passage_box.setText(self.current_passage)
