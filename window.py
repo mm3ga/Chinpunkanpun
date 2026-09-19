@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import (
     QMainWindow,
     QStackedWidget,
-    QMessageBox,
 )
 
 from PySide6.QtCore import (
@@ -366,39 +365,18 @@ class MainWindow(QMainWindow):
         else:
             self.current_help_data = None
 
+        if self.practice_screen.study_help_panel.isVisible():
+            self.practice_screen.populate_study_help(
+                self.current_help_data
+            )
+
     # ==================================================
     # Study help
     # ==================================================
 
     def study_help_show(self):
-        if not self.current_help_data:
-            return
-
-        lines = []
-
-        for item in self.current_help_data:
-            if item["meaning"]:
-                meanings = ", ".join(
-                    item["meaning"]
-                )
-
-            else:
-                meanings = "Meaning unavailable"
-
-            line = (
-                f'{item["surface"]} — '
-                f'{item["reading"]} — '
-                f'{meanings}'
-            )
-
-            lines.append(line)
-
-        piss = "\n".join(lines)
-
-        QMessageBox.information(
-            self,
-            "Study Help",
-            piss
+        self.practice_screen.toggle_study_help(
+            self.current_help_data
         )
 
     # ==================================================

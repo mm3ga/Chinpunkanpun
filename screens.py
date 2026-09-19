@@ -8,7 +8,8 @@ from PySide6.QtWidgets import (
     QSizePolicy,
     QGridLayout,
     QStackedWidget,
-    QFrame
+    QFrame,
+    QScrollArea
 )
 from PySide6.QtCore import Qt, Signal
 from kana_data import KANA_DATA
@@ -189,9 +190,9 @@ class PracticeScreen(QWidget):
         self.setObjectName("practiceScreen")
         self.setAttribute(Qt.WA_StyledBackground, True)
 
-        # =========================
-        # Widgets
-        # =========================
+        # ==================================================
+        # Header widgets
+        # ==================================================
 
         self.back_button = QPushButton("← Back")
         self.back_button.setObjectName("backButton")
@@ -205,72 +206,223 @@ class PracticeScreen(QWidget):
         self.subtitle = QLabel("Read at your own pace.")
         self.subtitle.setObjectName("practiceSubtitle")
 
+        # ==================================================
+        # Passage
+        # ==================================================
+
         self.passage_box = QTextEdit()
         self.passage_box.setObjectName("passageBox")
 
-        self.new_passage_button = QPushButton("New Passage")
-        self.translate_button = QPushButton("Translate")
-        self.study_help_button = QPushButton("Study Help")
+        # ==================================================
+        # Study Help panel
+        # ==================================================
 
-        self.new_passage_button.setObjectName("actionButton")
-        self.translate_button.setObjectName("actionButton")
-        self.study_help_button.setObjectName("actionButton")
+        self.study_help_panel = QFrame()
+        self.study_help_panel.setObjectName("studyHelpPanel")
+        self.study_help_panel.setFixedWidth(300)
 
-        # =========================
+        self.study_help_title = QLabel("Study Help")
+        self.study_help_title.setObjectName("studyHelpTitle")
+
+        self.study_help_subtitle = QLabel(
+            "Readings and meanings"
+        )
+        self.study_help_subtitle.setObjectName(
+            "studyHelpSubtitle"
+        )
+
+        self.study_help_scroll = QScrollArea()
+        self.study_help_scroll.setObjectName(
+            "studyHelpScroll"
+        )
+        self.study_help_scroll.setWidgetResizable(True)
+
+        self.study_help_content = QWidget()
+        self.study_help_content.setObjectName(
+            "studyHelpContent"
+        )
+
+        self.study_help_layout = QVBoxLayout()
+        self.study_help_layout.setSpacing(10)
+
+        self.study_help_layout.setContentsMargins(
+            8,
+            8,
+            8,
+            8
+        )
+
+        self.study_help_content.setLayout(
+            self.study_help_layout
+        )
+
+        self.study_help_scroll.setWidget(
+            self.study_help_content
+        )
+
+        help_panel_layout = QVBoxLayout()
+
+        help_panel_layout.addWidget(
+            self.study_help_title
+        )
+
+        help_panel_layout.addWidget(
+            self.study_help_subtitle
+        )
+
+        help_panel_layout.addSpacing(8)
+
+        help_panel_layout.addWidget(
+            self.study_help_scroll
+        )
+
+        help_panel_layout.setContentsMargins(
+            18,
+            18,
+            18,
+            18
+        )
+
+        self.study_help_panel.setLayout(
+            help_panel_layout
+        )
+
+        # Hidden until Study Help is clicked.
+        self.study_help_panel.hide()
+
+        # ==================================================
+        # Action buttons
+        # ==================================================
+
+        self.new_passage_button = QPushButton(
+            "New Passage"
+        )
+
+        self.study_help_button = QPushButton(
+            "Study Help"
+        )
+
+        self.translate_button = QPushButton(
+            "Translate"
+        )
+
+        self.new_passage_button.setObjectName(
+            "actionButton"
+        )
+
+        self.study_help_button.setObjectName(
+            "actionButton"
+        )
+
+        self.translate_button.setObjectName(
+            "actionButton"
+        )
+
+        # ==================================================
         # Top bar
-        # =========================
+        # ==================================================
 
         top_layout = QHBoxLayout()
 
-        top_layout.addWidget(self.back_button)
-        top_layout.addStretch()
-        top_layout.addWidget(self.mode_label)
+        top_layout.addWidget(
+            self.back_button
+        )
 
-        # =========================
-        # Actions
-        # =========================
+        top_layout.addStretch()
+
+        top_layout.addWidget(
+            self.mode_label
+        )
+
+        # ==================================================
+        # Reading area
+        # ==================================================
+
+        reading_layout = QHBoxLayout()
+
+        reading_layout.addWidget(
+            self.passage_box,
+            stretch=1
+        )
+
+        reading_layout.addWidget(
+            self.study_help_panel
+        )
+
+        reading_layout.setSpacing(16)
+
+        # ==================================================
+        # Action bar
+        # ==================================================
 
         action_layout = QHBoxLayout()
 
         action_layout.addStretch()
-        action_layout.addWidget(self.new_passage_button)
-        action_layout.addWidget(self.study_help_button)
-        action_layout.addWidget(self.translate_button)
+
+        action_layout.addWidget(
+            self.new_passage_button
+        )
+
+        action_layout.addWidget(
+            self.study_help_button
+        )
+
+        action_layout.addWidget(
+            self.translate_button
+        )
+
         action_layout.addStretch()
 
         action_layout.setSpacing(16)
 
-        # =========================
+        # ==================================================
         # Main layout
-        # =========================
+        # ==================================================
 
         main_layout = QVBoxLayout()
 
-        main_layout.addLayout(top_layout)
+        main_layout.addLayout(
+            top_layout
+        )
 
         main_layout.addSpacing(35)
 
-        main_layout.addWidget(self.title)
-        main_layout.addWidget(self.subtitle)
+        main_layout.addWidget(
+            self.title
+        )
+
+        main_layout.addWidget(
+            self.subtitle
+        )
 
         main_layout.addSpacing(24)
 
-        main_layout.addWidget(self.passage_box)
+        main_layout.addLayout(
+            reading_layout
+        )
 
         main_layout.addSpacing(22)
 
-        main_layout.addLayout(action_layout)
+        main_layout.addLayout(
+            action_layout
+        )
 
         main_layout.addStretch()
 
-        main_layout.setContentsMargins(55, 35, 55, 40)
+        main_layout.setContentsMargins(
+            55,
+            35,
+            55,
+            40
+        )
+
         main_layout.setSpacing(7)
 
         self.setLayout(main_layout)
 
-        # =========================
+        # ==================================================
         # Styling
-        # =========================
+        # ==================================================
 
         self.setStyleSheet("""
             QWidget#practiceScreen {
@@ -348,7 +500,181 @@ class PracticeScreen(QWidget):
             QPushButton#backButton:hover {
                 color: #d34484;
             }
+
+            QFrame#studyHelpPanel {
+                background-color: #fff8fb;
+
+                border: 2px solid #f3a1c4;
+                border-radius: 18px;
+            }
+
+            QLabel#studyHelpTitle {
+                font-size: 22px;
+                font-weight: 800;
+                color: #563847;
+            }
+
+            QLabel#studyHelpSubtitle {
+                font-size: 14px;
+                color: #987383;
+            }
+
+            QScrollArea#studyHelpScroll {
+                background: transparent;
+                border: none;
+            }
+
+            QWidget#studyHelpContent {
+                background: transparent;
+            }
+
+            QFrame#helpWordCard {
+                background-color: #fffdfd;
+
+                border: 1px solid #efb5ce;
+                border-radius: 12px;
+            }
+
+            QLabel#helpWord {
+                font-size: 21px;
+                font-weight: 700;
+                color: #613b50;
+            }
+
+            QLabel#helpReading {
+                font-size: 15px;
+                color: #c05888;
+            }
+
+            QLabel#helpMeaning {
+                font-size: 14px;
+                color: #725965;
+            }
+
+            QLabel#helpEmpty {
+                font-size: 14px;
+                color: #987383;
+            }
         """)
+
+    # ==================================================
+    # Study Help
+    # ==================================================
+
+    def toggle_study_help(self, help_data):
+        if self.study_help_panel.isVisible():
+            self.study_help_panel.hide()
+            return
+
+        self.populate_study_help(
+            help_data
+        )
+
+        self.study_help_panel.show()
+
+    def populate_study_help(self, help_data):
+        # Remove cards from the previous passage.
+        while self.study_help_layout.count():
+            layout_item = self.study_help_layout.takeAt(0)
+
+            widget = layout_item.widget()
+
+            if widget is not None:
+                widget.deleteLater()
+
+        # Nothing available.
+        if not help_data:
+            empty_label = QLabel(
+                "No study help available."
+            )
+
+            empty_label.setObjectName(
+                "helpEmpty"
+            )
+
+            self.study_help_layout.addWidget(
+                empty_label
+            )
+
+            self.study_help_layout.addStretch()
+
+            return
+
+        # Create one card per analyzed word.
+        for item in help_data:
+            card = QFrame()
+            card.setObjectName(
+                "helpWordCard"
+            )
+
+            word = QLabel(
+                item["surface"]
+            )
+
+            word.setObjectName(
+                "helpWord"
+            )
+
+            reading = QLabel(
+                item["reading"]
+            )
+
+            reading.setObjectName(
+                "helpReading"
+            )
+
+            if item["meaning"]:
+                meaning_text = ", ".join(
+                    item["meaning"]
+                )
+
+            else:
+                meaning_text = (
+                    "Meaning unavailable"
+                )
+
+            meaning = QLabel(
+                meaning_text
+            )
+
+            meaning.setObjectName(
+                "helpMeaning"
+            )
+
+            meaning.setWordWrap(True)
+
+            card_layout = QVBoxLayout()
+
+            card_layout.addWidget(
+                word
+            )
+
+            card_layout.addWidget(
+                reading
+            )
+
+            card_layout.addSpacing(4)
+
+            card_layout.addWidget(
+                meaning
+            )
+
+            card_layout.setContentsMargins(
+                14,
+                12,
+                14,
+                12
+            )
+
+            card.setLayout(
+                card_layout
+            )
+
+            self.study_help_layout.addWidget(
+                card
+            )
+
+        self.study_help_layout.addStretch()
 
 class BeginnerMenu(QWidget):
     def __init__(self):
