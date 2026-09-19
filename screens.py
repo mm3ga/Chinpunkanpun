@@ -10,9 +10,9 @@ from PySide6.QtWidgets import (
     QStackedWidget,
     QFrame
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from kana_data import KANA_DATA
-
+from topics import TOPICS
 
 class MainMenu(QWidget):
     def __init__(self):
@@ -435,6 +435,40 @@ class BeginnerMenu(QWidget):
 
         kana_card.setLayout(kana_layout)
 
+        #Topics
+        topics_card = QFrame()
+        topics_card.setObjectName("topicsCard")
+
+        topics_title = QLabel("Topics")
+        topics_title.setObjectName("topicsTitle")
+
+        topics_description = QLabel(
+            "Fantasy, Romance, Horror, Comedy, or Random."
+        )
+        topics_description.setObjectName("topicsDescription")
+
+        self.topics_button = QPushButton("Choose →")
+        self.topics_button.setObjectName("topicsButton")
+
+        topics_layout = QHBoxLayout()
+
+        topics_layout.addWidget(topics_title)
+        topics_layout.addSpacing(18)
+        topics_layout.addWidget(topics_description)
+
+        topics_layout.addStretch()
+
+        topics_layout.addWidget(self.topics_button)
+
+        topics_layout.setContentsMargins(
+            26,
+            18,
+            22,
+            18
+        )
+
+        topics_card.setLayout(topics_layout)
+
         # =========================
         # Layout
         # =========================
@@ -458,8 +492,10 @@ class BeginnerMenu(QWidget):
         main_layout.addSpacing(5)
         main_layout.addWidget(self.description)
 
-        main_layout.addSpacing(35)
         main_layout.addLayout(cards_layout)
+
+        main_layout.addSpacing(18)
+        main_layout.addWidget(topics_card)
 
         main_layout.addStretch()
 
@@ -552,6 +588,45 @@ class BeginnerMenu(QWidget):
 
             QPushButton#backButton:hover {
                 color: #d34484;
+            }
+
+            QFrame#topicsCard {
+                background-color: #fff8fb;
+
+                border: 2px solid #f39ac1;
+                border-radius: 16px;
+            }
+
+            QLabel#topicsTitle {
+                font-size: 20px;
+                font-weight: 700;
+                color: #7a3f5c;
+            }
+
+            QLabel#topicsDescription {
+                font-size: 15px;
+                color: #705763;
+            }
+
+            QPushButton#topicsButton {
+                background-color: #fff1f6;
+                color: #7a3f5c;
+
+                border: 2px solid #f04f98;
+                border-radius: 12px;
+
+                padding: 9px 18px;
+
+                font-size: 15px;
+                font-weight: 600;
+            }
+
+            QPushButton#topicsButton:hover {
+                background-color: #ffddeb;
+            }
+
+            QPushButton#topicsButton:pressed {
+                background-color: #ffcde1;
             }
         """)
 
@@ -1351,6 +1426,236 @@ class ExtrasScreen(QWidget):
             24,
             24,
             24
+        )
+
+        card.setLayout(layout)
+
+        return card
+
+class TopicsScreen(QWidget):
+
+    topic_selected = Signal(str)
+
+    def __init__(self):
+        super().__init__()
+
+        self.setObjectName("topicsScreen")
+        self.setAttribute(Qt.WA_StyledBackground, True)
+
+        # =========================
+        # Header
+        # =========================
+
+        self.back_button = QPushButton("← Back")
+        self.back_button.setObjectName("backButton")
+
+        self.title = QLabel("Choose a Topic")
+        self.title.setObjectName("topicsTitle")
+
+        self.subtitle = QLabel(
+            "What kind of world do you want to read today?"
+        )
+        self.subtitle.setObjectName("topicsSubtitle")
+
+        # =========================
+        # Topic cards
+        # =========================
+
+        topics_layout = QGridLayout()
+
+        topics_layout.setHorizontalSpacing(18)
+        topics_layout.setVerticalSpacing(18)
+
+        positions = [
+            (0, 0),
+            (0, 1),
+            (0, 2),
+            (1, 0),
+            (1, 1),
+        ]
+
+        self.topic_buttons = {}
+
+        for (topic_key, topic_data), position in zip(
+            TOPICS.items(),
+            positions
+        ):
+            card = self.create_topic_card(
+                topic_key,
+                topic_data["name"],
+                topic_data["description"],
+            )
+
+            topics_layout.addWidget(
+                card,
+                position[0],
+                position[1]
+            )
+
+        # Make Random sit centered on the bottom row.
+        topics_layout.setColumnStretch(0, 1)
+        topics_layout.setColumnStretch(1, 1)
+        topics_layout.setColumnStretch(2, 1)
+
+        # =========================
+        # Main layout
+        # =========================
+
+        top_layout = QHBoxLayout()
+        top_layout.addWidget(self.back_button)
+        top_layout.addStretch()
+
+        main_layout = QVBoxLayout()
+
+        main_layout.addLayout(top_layout)
+
+        main_layout.addSpacing(30)
+
+        main_layout.addWidget(self.title)
+        main_layout.addWidget(self.subtitle)
+
+        main_layout.addSpacing(30)
+
+        main_layout.addLayout(topics_layout)
+
+        main_layout.addStretch()
+
+        main_layout.setContentsMargins(
+            55,
+            35,
+            55,
+            45
+        )
+
+        self.setLayout(main_layout)
+
+        # =========================
+        # Styling
+        # =========================
+
+        self.setStyleSheet("""
+            QWidget#topicsScreen {
+                background-color: #eee8f5;
+                color: #403747;
+                font-family: Sans Serif;
+            }
+
+            QLabel {
+                background: transparent;
+            }
+
+            QLabel#topicsTitle {
+                font-size: 40px;
+                font-weight: 800;
+                color: #403747;
+            }
+
+            QLabel#topicsSubtitle {
+                font-size: 16px;
+                color: #766a7d;
+            }
+
+            QFrame#topicCard {
+                background-color: #faf8fc;
+
+                border: 1px solid #cfc4da;
+                border-radius: 18px;
+
+                min-height: 155px;
+            }
+
+            QLabel#topicName {
+                font-size: 23px;
+                font-weight: 700;
+                color: #5f4a69;
+            }
+
+            QLabel#topicDescription {
+                font-size: 15px;
+                color: #75697b;
+            }
+
+            QPushButton#topicButton {
+                background-color: #f2edf6;
+                color: #654f70;
+
+                border: 1px solid #b7a4c4;
+                border-radius: 11px;
+
+                padding: 9px 15px;
+
+                font-size: 15px;
+                font-weight: 600;
+            }
+
+            QPushButton#topicButton:hover {
+                background-color: #e6dced;
+                border-color: #8f759f;
+            }
+
+            QPushButton#topicButton:pressed {
+                background-color: #dbcee5;
+            }
+
+            QPushButton#backButton {
+                background: transparent;
+                border: none;
+
+                color: #695774;
+
+                padding: 8px 10px;
+
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            QPushButton#backButton:hover {
+                color: #45354e;
+            }
+        """)
+
+    def create_topic_card(
+        self,
+        topic_key,
+        name,
+        description
+    ):
+        card = QFrame()
+        card.setObjectName("topicCard")
+
+        title = QLabel(name)
+        title.setObjectName("topicName")
+
+        description_label = QLabel(description)
+        description_label.setObjectName(
+            "topicDescription"
+        )
+
+        button = QPushButton("Choose →")
+        button.setObjectName("topicButton")
+
+        self.topic_buttons[topic_key] = button
+
+        button.clicked.connect(
+            lambda checked=False, key=topic_key:
+                self.topic_selected.emit(key)
+        )
+
+        layout = QVBoxLayout()
+
+        layout.addWidget(title)
+        layout.addSpacing(7)
+        layout.addWidget(description_label)
+
+        layout.addStretch()
+
+        layout.addWidget(button)
+
+        layout.setContentsMargins(
+            22,
+            20,
+            22,
+            20
         )
 
         card.setLayout(layout)
