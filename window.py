@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
 from PySide6.QtCore import QThread, Qt, Signal
 from passages import PassageWorker
-from screens import KanaHelpScreen, MainMenu, PracticeScreen, BeginnerMenu
+from screens import KanaHelpScreen, MainMenu, PracticeScreen, BeginnerMenu, SettingsScreen, ExtrasScreen
 from translation import TranslationWorker
 from study_support import analyze_sentence
 
@@ -30,6 +30,8 @@ class MainWindow(QMainWindow):
         self.practice_screen = PracticeScreen()
         self.beginner_menu = BeginnerMenu()
         self.kana_help_screen = KanaHelpScreen()
+        self.settings_screen = SettingsScreen()
+        self.extras_screen = ExtrasScreen()
         self.worker = PassageWorker()
         self.translation_worker = TranslationWorker()
         self.stack = QStackedWidget()
@@ -37,11 +39,17 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.practice_screen)
         self.stack.addWidget(self.beginner_menu)
         self.stack.addWidget(self.kana_help_screen)
+        self.stack.addWidget(self.settings_screen)
+        self.stack.addWidget(self.extras_screen)
         self.setCentralWidget(self.stack)
         self.practice_screen.new_passage_button.clicked.connect(self.new_passage)
         self.practice_screen.study_help_button.clicked.connect(self.study_help_show)
         self.main_menu.intermediate_button.clicked.connect(self.load_intermediate)
         self.main_menu.beginner_button.clicked.connect(self.open_beginner_menu)
+        self.main_menu.settings_button.clicked.connect(lambda: self.stack.setCurrentWidget(self.settings_screen))
+        self.settings_screen.back_button.clicked.connect(lambda: self.stack.setCurrentWidget(self.main_menu))
+        self.main_menu.extras_button.clicked.connect(lambda: self.stack.setCurrentWidget(self.extras_screen))
+        self.extras_screen.back_button.clicked.connect(lambda: self.stack.setCurrentWidget(self.main_menu))
         self.beginner_menu.practice_button.clicked.connect(self.load_beginner)
         self.beginner_menu.kana_button.clicked.connect(self.open_kana_help)
         self.beginner_menu.back_button.clicked.connect(self.go_back_to_main)
